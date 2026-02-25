@@ -35,7 +35,8 @@ import tinychat.utils.constants
 from tinychat.stream_generators.NVILA_stream_gen import NVILAStreamGenerator
 from tinychat.utils.conversation_utils import gen_params, stream_output, TimeStats
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# Respect externally assigned GPUs (e.g., scheduler/cgroup). Default to GPU 0 only when unset.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 
 def download_model_file(
     repo_id: str = "Efficient-Large-Model/NVILA-AWQ",

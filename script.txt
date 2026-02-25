@@ -1,0 +1,45 @@
+
+
+# install scripts
+uv venv --python 3.10 .venv
+source .venv/bin/activate
+uv pip install -e .
+cd awq/kernels && python setup.py install && cd ../..
+
+# flash attn install for speed up
+uv pip install flash-attn --no-build-isolation
+uv pip install --force-reinstall /tmp/flash_attn-2.7.4.post1+cu12torch2.3cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
+
+# huggingface_hub face
+uv pip install -U huggingface_hub
+
+# test
+python -m awq.entry --help test
+
+# Download Instruct Qwen2.5-1.5B-Instruct Model
+python -c "from huggingface_hub import snapshot_download; print(snapshot_download(repo_id='Qwen/Qwen2.5-1.5B-Instruct', local_dir='/home/sd24191/models/Qwen2.5-1.5B-Instruct'))"
+
+# AWQ Search
+python -m awq.entry \
+  --model_path /home/sd24191/models/Qwen2.5-1.5B-Instruct \
+  --w_bit 4 --q_group_size 128 \
+  --run_awq --dump_awq awq_cache/qwen2.5-1.5b-instruct-w4-g128.pt
+
+# AWQ Generate
+python -m awq.entry \
+  --model_path /home/sd24191/models/Qwen2.5-1.5B-Instruct \
+  --w_bit 4 --q_group_size 128 \
+  --load_awq awq_cache/qwen2.5-1.5b-instruct-w4-g128.pt \
+  --q_backend real \
+  --dump_quant quant_cache/qwen2.5-1.5b-instruct-w4-g128-awq.pt
+
+# Inference
+python -m tinychat.demo \
+  --model_type qwen \
+  --model_path /home/sd24191/models/Qwen2.5-1.5B-Instruct \
+  --q_group_size 128 \
+  --load_quant quant_cache/qwen2.5-1.5b-instruct-w4-g128-awq-v2.pt \
+  --precision W4A16 \
+  --flash_attn \
+  --chunk_prefilling
+

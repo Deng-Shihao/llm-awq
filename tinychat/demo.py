@@ -13,7 +13,8 @@ from tinychat.utils.tune import device_warmup, tune_all_wqlinears
 
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+# Respect externally assigned GPUs (e.g., scheduler/cgroup). Default to GPU 0 only when unset.
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 
 # opt_params in TinyLLMEngine
 gen_params = AttributeDict(
@@ -133,6 +134,12 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    if args.device.startswith("cuda") and not torch.cuda.is_available():
+        raise RuntimeError(
+            "No CUDA device is visible to PyTorch. "
+            "Please check `nvidia-smi`, CUDA driver/container permissions, and "
+            "ensure `CUDA_VISIBLE_DEVICES` is correctly set."
+        )
     assert args.model_type.lower() in [
         "llama",
         "falcon",
