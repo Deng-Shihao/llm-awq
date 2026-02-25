@@ -7,20 +7,28 @@ name = "awq"
 version = "0.1.0"
 description = "An efficient and accurate low-bit weight quantization(INT3/4) method for LLMs."
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
 ]
 dependencies = [
-    "accelerate==0.34.2", "sentencepiece", "tokenizers>=0.12.1",
-    "torch==2.3.0", "torchvision==0.18.0",
-    "transformers==4.46.0", 
-    "lm_eval==0.3.0", "texttable",
-    "toml", "attributedict",
-    "protobuf",
-    "gradio==3.35.2", "gradio_client==0.2.9",
-    "fastapi", "uvicorn",
+    "accelerate==0.34.2",
+    "sentencepiece>=0.2.0",
+    "tokenizers>=0.20,<0.21",
+    "torch==2.3.0",
+    "torchvision==0.18.0",
+    "transformers==4.46.3",
+    "huggingface-hub>=0.23.2,<1.0",
+    "lm_eval==0.3.0",
+    "texttable>=1.7.0",
+    "toml>=0.10.2",
+    "attributedict>=0.3.0",
+    "protobuf>=4.25.0,<6",
+    "gradio==3.35.2",
+    "gradio_client==0.2.9",
+    "fastapi==0.125.0",
+    "uvicorn==0.41.0",
     "pydantic==1.10.19"
 ]
 

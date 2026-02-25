@@ -1,5 +1,3 @@
-
-
 # install scripts
 uv venv --python 3.10 .venv
 source .venv/bin/activate
